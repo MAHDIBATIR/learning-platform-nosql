@@ -5,21 +5,54 @@
 // Réponse : Les bonnes pratiques pour les clés Redis incluent l'utilisation de noms de clés descriptifs et hiérarchiques, l'ajout de préfixes pour éviter les collisions de noms, et la définition de TTL pour les clés afin de gérer la mémoire de manière efficace.
 
 
-const db = require('../config/db');
+const redis = require("redis");
+const client = redis.createClient({ url: process.env.REDIS_URI });
+
+client.on("error", (err) => console.error("Redis Client Error", err));
+
+async function connectRedis() {
+  if (!client.isOpen) {
+    await client.connect();
+  }
+}
 
 // Fonctions utilitaires pour Redis
 async function cacheData(key, data, ttl) {
-  const client = db.getRedisClient();
-  await client.set(key, JSON.stringify(data), 'EX', ttl);
+  try {
+    await connectRedis();
+    await client.set(key, JSON.stringify(data), { EX: ttl });
+    console.log(`Data cached with key: ${key}`);
+  } catch (error) {
+    console.error("Error caching data:", error);
+    throw error;
+  }
 }
 
-async function getCachedData(key) {
-  const client = db.getRedisClient();
-  const data = await client.get(key);
-  return data ? JSON.parse(data) : null;
+async function getData(key) {
+  try {
+    await connectRedis();
+    const data = await client.get(key);
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error("Error getting cached data:", error);
+    throw error;
+  }
+}
+
+async function deleteData(key) {
+  try {
+    await connectRedis();
+    await client.del(key);
+    console.log(`Data deleted with key: ${key}`);
+  } catch (error) {
+    console.error("Error deleting cached data:", error);
+    throw error;
+  }
 }
 
 module.exports = {
   cacheData,
-  getCachedData
+  getData,
+  deleteData,
+  connectRedis,
 };

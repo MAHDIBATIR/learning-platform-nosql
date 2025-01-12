@@ -1,8 +1,9 @@
-// Question: Quelles sont les informations sensibles à ne jamais commiter ?
-// Réponse : Les informations sensibles à ne jamais commiter incluent les mots de passe, les clés API, les jetons d'accès, et toute autre information confidentielle qui pourrait compromettre la sécurité de l'application.
+// Question: Pourquoi est-il important de valider les variables d'environnement au démarrage ?
+// Réponse : Il est important de valider les variables d'environnement au démarrage pour s'assurer que toutes les configurations nécessaires sont présentes et correctes. Cela permet d'éviter les erreurs de configuration qui pourraient entraîner des comportements inattendus ou des pannes de l'application.
 
-// Question: Pourquoi utiliser des variables d'environnement ?
-// Réponse : Les variables d'environnement permettent de configurer l'application de manière flexible et sécurisée, sans avoir à modifier le code source. Elles facilitent également la gestion des configurations pour différents environnements (développement, test, production).
+// Question: Que se passe-t-il si une variable requise est manquante ?
+// Réponse : Si une variable requise est manquante, l'application peut ne pas fonctionner correctement ou échouer au démarrage. Il est donc important de lever une erreur explicative pour informer le développeur ou l'administrateur du problème.onse : Les variables d'environnement permettent de configurer l'application de manière flexible et sécurisée, sans avoir à modifier le code source. Elles facilitent également la gestion des configurations pour différents environnements (développement, test, production).
+
 const dotenv = require('dotenv');
 dotenv.config();
 
